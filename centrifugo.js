@@ -37,8 +37,8 @@ function generateToken(userId) {
 
 export let options = {
     stages: [
-        { duration: '1s', target: 2 }, // Ramp up to 100 users over 1 minute
-        { duration: '2s', target: 2 }, // Stay at 100 users for 3 minutes
+        { duration: '2m', target: 2000 }, // Ramp up to 100 users over 1 minute
+        { duration: '3m', target: 2000 }, // Stay at 100 users for 3 minutes
     ]
 };
 
