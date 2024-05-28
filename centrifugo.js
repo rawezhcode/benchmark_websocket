@@ -3,9 +3,7 @@ import { check } from 'k6';
 import crypto from "k6/crypto";
 import encoding from "k6/encoding";
 
-
-
-const hmacSecret = "f80035cd-5e0e-461f-8b4d-97c96cc35264";
+const hmacSecret = __ENV.CENTRIFUGO_HMAC_SECRET;
 
 const algToHash = {
     HS256: "sha256",
@@ -39,19 +37,20 @@ function generateToken(userId) {
 
 export let options = {
     stages: [
-        { duration: '2m', target: 1900 }, // Ramp up to 100 users over 1 minute
-        { duration: '3m', target: 1900 }, // Stay at 100 users for 3 minutes
+        { duration: '1s', target: 2 }, // Ramp up to 100 users over 1 minute
+        { duration: '2s', target: 2 }, // Stay at 100 users for 3 minutes
     ]
 };
 
 export default function () {
-    const url = 'wss://ws.kurddreamsr.com:8000/connection/websocket';
+    const url = __ENV.CENTRIFUGO_URL;
 
     const user = `user_${__VU}_${__ITER}`;
     const token = generateToken(user);
-
+    
     const response = ws.connect(url, {}, function (socket) {
         socket.on('open', () => {
+            console.log(__ENV.CENTRIFUGO_URL);
             console.log('Connected');
             const connectCommand = JSON.stringify({ id: 1, connect: { token: token } });
             const subscribeCommand = JSON.stringify({ id: 2, subscribe: { channel: 'presence-public:chats' } });
@@ -63,7 +62,7 @@ export default function () {
             const substrings = message.split("\n");
             if (substrings.includes("{}")) {
                 // console.log('Respond to server pings: ', message);
-                socket.send('{"data":8888789}');
+                socket.send('{"data":12}');
             }
         });
 

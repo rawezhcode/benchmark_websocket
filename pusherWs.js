@@ -11,7 +11,8 @@ export let options = {
 };
 
 export default function () {
-    const url = 'wss://socket.kurddreamsr.com/app/hg5syedi4yurlwqnlyx5?protocol=7&client=js&version=8.4.0-rc2&flash=false';
+    
+    const url = __ENV.PUSHER_URL;
     const params = { tags: { my_tag: 'my ws test' } };
 
     const res = ws.connect(url, params, function (socket) {
